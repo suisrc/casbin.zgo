@@ -11,7 +11,7 @@ import (
 
 // IsPassPermission 跳过权限判断
 // 确定管理员身份， 这里是否担心管理员身份被篡改？如果签名密钥泄漏， 会发生签名篡改问题， 所以需要保密服务器签名密钥
-func (a *Auther) IsPassPermission(c res.ReqContext, user auth.UserInfo, svc, org string) (bool, error) {
+func (a *Auther) IsPassPermission(c res.Context, user auth.UserInfo, svc, org string) (bool, error) {
 	if user.GetOrgAdmin() == a.Implor.GetSuperUserCode() {
 		// 组织管理员， 跳过验证
 		return true, nil
@@ -35,7 +35,7 @@ func (a *Auther) IsPassPermission(c res.ReqContext, user auth.UserInfo, svc, org
 }
 
 // GetUserRole 获取验证控制器
-func (a *Auther) GetUserRole(c res.ReqContext, user auth.UserInfo, svc, org string) (role string, err error) {
+func (a *Auther) GetUserRole(c res.Context, user auth.UserInfo, svc, org string) (role string, err error) {
 	if roles := user.GetUserRoles(); len(roles) == 0 {
 		// 当前用户没有可用角色
 		return "", nil

@@ -7,7 +7,7 @@ import (
 
 // UseAuthBasicMiddleware 用户授权中间件, 只判定登录权限
 func (a *Auther) UseAuthBasicMiddleware(skippers ...res.SkipperFunc) res.HandlerFunc {
-	return func(c res.ReqContext) {
+	return func(c res.Context) {
 		if res.SkipHandler(c, skippers...) {
 			c.Next()
 			return

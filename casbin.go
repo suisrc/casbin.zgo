@@ -21,13 +21,13 @@ type Implor interface {
 	GetClientUA() string
 	UpdateModelEnable(mid int64) error
 	QueryPolicies(org, ver string) (*Policy, error)
-	QueryServiceCode(ctx res.ReqContext, user auth.UserInfo, host, path, org string) (string, int64, error)
-	CheckTenantService(ctx res.ReqContext, user auth.UserInfo, org, svc string, sid int64) (bool, error)
+	QueryServiceCode(ctx res.Context, user auth.UserInfo, host, path, org string) (string, int64, error)
+	CheckTenantService(ctx res.Context, user auth.UserInfo, org, svc string, sid int64) (bool, error)
 
-	SetHeader(ctx res.ReqContext, key, value string)
-	SetUserInfo(ctx res.ReqContext, usr auth.UserInfo)
-	ResError(ctx res.ReqContext, err *res.ErrorModel)
-	FixError(ctx res.ReqContext, status int, err error, fun func()) bool
+	SetHeader(ctx res.Context, key, value string)
+	SetUserInfo(ctx res.Context, usr auth.UserInfo)
+	ResError(ctx res.Context, err *res.ErrorModel)
+	FixError(ctx res.Context, status int, err error, fun func()) bool
 }
 
 // 角色定义：
@@ -37,7 +37,7 @@ type Implor interface {
 // 3.子应用可以使用使用X-Request-Svc-[SVC-NAME]-Role指定服务角色， 且角色有限被使用
 
 // UseAuthCasbinMiddlewareByOrigin 用户授权中间件
-func (a *Auther) AuthCasbinMiddlewareByOrigin(c res.ReqContext, conf config.Casbin, xget func(res.ReqContext, string) (string, error)) {
+func (a *Auther) AuthCasbinMiddlewareByOrigin(c res.Context, conf config.Casbin, xget func(res.Context, string) (string, error)) {
 
 	user, err := a.Implor.GetAuther().GetUserInfo(c, "")
 	if err != nil {

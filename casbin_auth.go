@@ -13,16 +13,16 @@ import (
 
 // UseAuthCasbinMiddleware 用户授权中间件
 func (a *Auther) UseAuthCasbinMiddleware(skippers ...res.SkipperFunc) res.HandlerFunc {
-	return a.UseAuthCasbinMiddlewareByOrigin(func(c res.ReqContext, k string) (string, error) { return "default", nil }, skippers...)
+	return a.UseAuthCasbinMiddlewareByOrigin(func(c res.Context, k string) (string, error) { return "default", nil }, skippers...)
 }
 
 // UseAuthCasbinMiddlewareByOrigin 用户授权中间件
-func (a *Auther) UseAuthCasbinMiddlewareByOrigin(xget func(res.ReqContext, string) (string, error), skippers ...res.SkipperFunc) res.HandlerFunc {
+func (a *Auther) UseAuthCasbinMiddlewareByOrigin(xget func(res.Context, string) (string, error), skippers ...res.SkipperFunc) res.HandlerFunc {
 	if !config.C.JWTAuth.Enable {
 		return res.EmptyMiddleware()
 	}
 	conf := config.C.Casbin
-	return func(c res.ReqContext) {
+	return func(c res.Context) {
 		if res.SkipHandler(c, skippers...) {
 			c.Next() // 需要跳过权限验证的uri内容
 			return

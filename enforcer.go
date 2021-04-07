@@ -98,7 +98,7 @@ func (a *Auther) ClearEnforcer(force bool, org string) {
 }
 
 // GetEnforcer 获取验证控制器
-func (a *Auther) GetEnforcer(c res.ReqContext, user auth.UserInfo, svc, org string) (*casbin.SyncedEnforcer, error) {
+func (a *Auther) GetEnforcer(c res.Context, user auth.UserInfo, svc, org string) (*casbin.SyncedEnforcer, error) {
 	if a.CachedEnforcer == nil {
 		a.CachedEnforcer = map[string]*Enforcer{}
 		a.CachedExpireAt = time.Now().Add(CachedExpireAt)

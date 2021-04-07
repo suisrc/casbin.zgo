@@ -4,7 +4,6 @@ go 1.16
 
 require (
 	github.com/casbin/casbin/v2 v2.25.5
-	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/jmoiron/sqlx v1.3.1
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/nicksnyder/go-i18n/v2 v2.1.2
@@ -15,7 +14,6 @@ require (
 	github.com/suisrc/logger.zgo v0.0.0
 	github.com/suisrc/res.zgo v0.0.0
 	golang.org/x/sys v0.0.0-20210112080510-489259a85091 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
 
