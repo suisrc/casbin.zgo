@@ -26,7 +26,5 @@ func (a *Auther) UseAuthBasicMiddleware(skippers ...res.SkipperFunc) res.Handler
 			return // 解析jwt令牌出现未知错误
 		}
 		a.Implor.SetUserInfo(c, user)
-		c.Next()
-		return
 	}
 }

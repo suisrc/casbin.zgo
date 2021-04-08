@@ -124,7 +124,7 @@ func (a *Auther) GetEnforcer(c res.Context, user auth.UserInfo, svc, org string)
 			// 如果引擎在600秒没有被使用， 将会被释放
 			if 8*time.Second < ca && ca < EnforcerCheckAt/2 {
 				ver = cached.Version
-				go a.GetEnforcer2(user, cached, svc, org, key, ver)
+				go a.GetEnforcer2(c, user, cached, svc, org, key, ver)
 			}
 		}
 		return cached.Enforcer, nil
@@ -148,7 +148,7 @@ func (a *Auther) GetEnforcer(c res.Context, user auth.UserInfo, svc, org string)
 
 	}
 	// 处理结果
-	if efc, err := a.GetEnforcer2(user, cached, svc, org, key, ver); err != nil {
+	if efc, err := a.GetEnforcer2(c, user, cached, svc, org, key, ver); err != nil {
 		return nil, err
 	} else if efc != nil {
 		if cached != nil {
@@ -162,13 +162,13 @@ func (a *Auther) GetEnforcer(c res.Context, user auth.UserInfo, svc, org string)
 }
 
 // GetEnforcer2 获取验证控制器
-func (a *Auther) GetEnforcer2(user auth.UserInfo, cached *Enforcer, svc, org, key, ver string) (*casbin.SyncedEnforcer, error) {
+func (a *Auther) GetEnforcer2(c res.Context, user auth.UserInfo, cached *Enforcer, svc, org, key, ver string) (*casbin.SyncedEnforcer, error) {
 	if cached != nil {
 		defer func() { cached.Check = false }()
 		cached.Check = true
 	}
 	// 执行更新
-	if cps, err := a.Implor.QueryPolicies(org, ver); err != nil {
+	if cps, err := a.Implor.QueryPolicies(c, org, ver); err != nil {
 		return nil, err
 	} else if cached != nil && cps == nil {
 		// 版本不变, 重置有效期限， 不需要任何修改

@@ -17,10 +17,10 @@ type Implor interface {
 	GetSqlx2() *sqlx.DB
 	GetSuperUserCode() string
 	GetPlatformCode() string
-	GetClientIP() string
-	GetClientUA() string
 	UpdateModelEnable(mid int64) error
-	QueryPolicies(org, ver string) (*Policy, error)
+	GetClientIP(ctx res.Context) string
+	GetClientUA(ctx res.Context) string
+	QueryPolicies(ctx res.Context, org, ver string) (*Policy, error)
 	QueryServiceCode(ctx res.Context, user auth.UserInfo, host, path, org string) (string, int64, error)
 	CheckTenantService(ctx res.Context, user auth.UserInfo, org, svc string, sid int64) (bool, error)
 
@@ -141,18 +141,18 @@ func (a *Auther) AuthCasbinMiddlewareByOrigin(c res.Context, conf config.Casbin,
 	sub := Subject{
 		// UsrID:    aid,
 		// AccID:    uid,
-		Role:   role,                   // casbin -> 参数 角色
-		Acc1:   user.GetAccount1(),     // casbin -> 参数 系统ID
-		Acc2:   user.GetAccount2(),     // casbin -> 参数 租户自定义ID
-		Usr:    user.GetUserID(),       // casbin -> 参数 用户ID
-		Org:    org,                    // casbin -> 参数 租户
-		OrgUsr: user.GetOrgUsrID(),     // casbin -> 参数 租户自定义ID
-		Iss:    user.GetIssuer(),       // casbin -> 参数 授控域
-		Aud:    user.GetAudience(),     // casbin -> 参数 受控域
-		Agent:  user.GetAgent(),        // casbin -> 参数 应用ID
-		Scope:  user.GetScope(),        // casbin -> 参数 作用域
-		Cip:    a.Implor.GetClientIP(), // casbin -> 参数 client ip
-		Cua:    a.Implor.GetClientUA(), // casbin -> 参数 client user agent
+		Role:   role,                    // casbin -> 参数 角色
+		Acc1:   user.GetAccount1(),      // casbin -> 参数 系统ID
+		Acc2:   user.GetAccount2(),      // casbin -> 参数 租户自定义ID
+		Usr:    user.GetUserID(),        // casbin -> 参数 用户ID
+		Org:    org,                     // casbin -> 参数 租户
+		OrgUsr: user.GetOrgUsrID(),      // casbin -> 参数 租户自定义ID
+		Iss:    user.GetIssuer(),        // casbin -> 参数 授控域
+		Aud:    user.GetAudience(),      // casbin -> 参数 受控域
+		Agent:  user.GetAgent(),         // casbin -> 参数 应用ID
+		Scope:  user.GetScope(),         // casbin -> 参数 作用域
+		Cip:    a.Implor.GetClientIP(c), // casbin -> 参数 client ip
+		Cua:    a.Implor.GetClientUA(c), // casbin -> 参数 client user agent
 	}
 	// 访问资源
 	method, _ := xget(c, res.XReqOriginMethodKey)
@@ -214,5 +214,4 @@ func (a *Auther) AuthCasbinMiddlewareByOrigin(c res.Context, conf config.Casbin,
 	}
 
 	a.Implor.SetUserInfo(c, user)
-	c.Next()
 }
